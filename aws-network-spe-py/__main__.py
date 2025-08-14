@@ -38,6 +38,18 @@ faucet_key = svmkit.KeyPair("faucet-key")
 treasury_key = svmkit.KeyPair("treasury-key")
 stake_account_key = svmkit.KeyPair("stake-account-key")
 
+def get_native_mint_account():
+    import base64
+
+    data = bytearray(82)
+    data[0:4] = [0, 0, 0, 0]
+    data[44] = 9
+    data[45] = 1 
+    data[46:50] = [0, 0, 0, 0]
+    return base64.b64encode(data).decode('utf-8')
+    
+native_mint_data = get_native_mint_account()
+
 genesis = svmkit.genesis.Solana(
     "genesis",
     connection=bootstrap_node.connection,
@@ -73,6 +85,20 @@ genesis = svmkit.genesis.Solana(
         {
             "pubkey": faucet_key.public_key,
             "lamports": 1000000000000,  # 1000 SOL
+        },
+        {
+            "pubkey": "So11111111111111111111111111111111111111112", # Native Mint WSOL
+            "lamports": 5000000,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "executable": False,
+            "data": native_mint_data,
+        },
+        {
+            "pubkey": "9pan9bMn5HatX4EJdBwg9VgCa7Uz5HL8N1m5D3NdXejP", # Native Mint WSOL 2022
+            "lamports": 5000000,
+            "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+            "executable": False,
+            "data": native_mint_data,
         },
     ],
     opts=pulumi.ResourceOptions(
