@@ -188,6 +188,24 @@ const bootstrapValidator = bootstrapNode.configureValidator(
   runnerConfig,
 );
 
+const explorer = new svmkit.explorer.Explorer(
+  "bootstrap-explorer", {
+    connection: bootstrapNode.connection,
+    environment: solEnv,
+    flags:{
+        "hostname": "0.0.0.0",
+        "port": explorerPort,
+    },
+    name: "Demo",
+    symbol: "DMO",
+    clusterName: "demonet",
+    RPCURL: "http://localhost:8899",
+  },
+    {
+    dependsOn: [genesis],
+  },
+);
+
 const nonBootstrapNodes = [...Array(totalNodes - 1)].map(
   (_, i) => new Node(`node${i}`),
 );
